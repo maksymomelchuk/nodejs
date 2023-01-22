@@ -3,7 +3,6 @@ const express = require('express')
 const router = express.Router()
 
 const {
-  listContacts,
   getContactById,
   removeContact,
   addContact,
@@ -11,21 +10,15 @@ const {
   patchContact,
 } = require('../../models/contacts')
 
+const ctrlContact = require('../../controller/index')
+
 const {
   addContactValidation,
   updateContactValidation,
 } = require('../../middlewares/validation')
 
 // Get all contacts
-router.get('/', async (req, res) => {
-  console.log('im in router get')
-  try {
-    const contacts = await listContacts()
-    res.status(200).json(contacts)
-  } catch (error) {
-    res.status(404).json({ message: error.message })
-  }
-})
+router.get('/', ctrlContact.get)
 // Get contact by id
 router.get('/:contactId', async (req, res) => {
   const { contactId } = req.params
