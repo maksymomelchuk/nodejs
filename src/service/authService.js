@@ -60,9 +60,29 @@ const current = async (token) => {
   return { email, subscription }
 }
 
+const changeSubcription = async (token, body) => {
+  const user = await User.findOne({ token })
+  if (!user) {
+    throw new NotAuthorizedError('Unauthorized error')
+  }
+
+  if (
+    !body.subscription ||
+    !['starter', 'pro', 'business'].includes(body.subscription)
+  ) {
+    throw new NotAuthorizedError('Please, provide valid subscription plan')
+  }
+
+  const newUser = await User.findOneAndUpdate({ token }, body, {
+    new: true,
+  })
+  return newUser
+}
+
 module.exports = {
   register,
   login,
   logout,
   current,
+  changeSubcription,
 }

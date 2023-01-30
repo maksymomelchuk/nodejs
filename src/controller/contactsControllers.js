@@ -10,7 +10,8 @@ const {
 // Get all contacts
 const get = async (req, res, next) => {
   const { _id } = req.user
-  const results = await getContacts(_id)
+
+  const results = await getContacts(_id, req.query)
   res.json(results)
 }
 // Get contact by id

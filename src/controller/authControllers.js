@@ -1,4 +1,11 @@
-const { register, login, logout, current } = require('../service/authService')
+const { parseToken } = require('../helpers/apiHelpers')
+const {
+  register,
+  login,
+  logout,
+  current,
+  changeSubcription,
+} = require('../service/authService')
 
 const registerController = async (req, res) => {
   const { email, password } = req.body
@@ -20,16 +27,23 @@ const loginController = async (req, res) => {
 }
 
 const logoutController = async (req, res) => {
-  const [, token] = req.headers.authorization.split(' ')
+  const [, token] = parseToken(req)
   await logout(token)
 
   res.status(204).json()
 }
 
 const currentUserController = async (req, res) => {
-  const [, token] = req.headers.authorization.split(' ')
+  const [, token] = parseToken(req)
   const user = await current(token)
 
+  res.status(200).json({ status: 'success', user })
+}
+
+const changeSubscriptionController = async (req, res) => {
+  const [, token] = parseToken(req)
+
+  const user = await changeSubcription(token, req.body)
   res.status(200).json({ status: 'success', user })
 }
 
@@ -38,4 +52,5 @@ module.exports = {
   loginController,
   logoutController,
   currentUserController,
+  changeSubscriptionController,
 }

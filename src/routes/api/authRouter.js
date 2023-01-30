@@ -7,6 +7,7 @@ const {
   registerController,
   logoutController,
   currentUserController,
+  changeSubscriptionController,
 } = require('../../controller/authControllers')
 
 const { asyncWrapper } = require('../../helpers/apiHelpers')
@@ -20,5 +21,7 @@ router.post('/login', asyncWrapper(loginController))
 router.post('/logout', authMiddleware, asyncWrapper(logoutController))
 // Get current user
 router.get('/current', authMiddleware, asyncWrapper(currentUserController))
+// Change subscription
+router.patch('/', authMiddleware, asyncWrapper(changeSubscriptionController))
 
 module.exports = { authRouter: router }

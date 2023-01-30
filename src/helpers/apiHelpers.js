@@ -25,8 +25,13 @@ const createToken = async (user) => {
   return token
 }
 
+const parseToken = (req) => {
+  return req.headers.authorization.split(' ')
+}
+
 module.exports = {
   asyncWrapper,
   errorHandler,
   createToken,
+  parseToken,
 }

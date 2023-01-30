@@ -1,8 +1,11 @@
 const Contact = require('../db/contactModel')
 const { NotFoundError } = require('../helpers/errors')
 
-const getContacts = async (owner) => {
+const getContacts = async (owner, { page, limit, favorite }) => {
   const data = await Contact.find({ owner })
+    .skip((parseInt(page) - 1) * parseInt(limit))
+    .limit(parseInt(limit))
+    .find(favorite && { favorite })
   return data
 }
 
