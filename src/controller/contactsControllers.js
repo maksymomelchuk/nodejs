@@ -1,44 +1,55 @@
-const service = require('../service/contactsService')
+const {
+  getContacts,
+  getContactById,
+  removeContact,
+  addContact,
+  patchContact,
+  updateContact,
+} = require('../service/contactsService')
 
 // Get all contacts
 const get = async (req, res, next) => {
-  const results = await service.getContacts()
+  const { _id } = req.user
+  const results = await getContacts(_id)
   res.json(results)
 }
 // Get contact by id
 const getById = async (req, res) => {
   const { contactId } = req.params
-  const contact = await service.getContactById(contactId)
+  const { _id } = req.user
+  const contact = await getContactById(contactId, _id)
 
   return res.json(contact)
 }
 // Delete contact by id
 const remove = async (req, res, next) => {
   const { contactId } = req.params
-  await service.removeContact(contactId)
+  const { _id } = req.user
+  await removeContact(contactId, _id)
 
   return res.json({ message: `Contact with id '${contactId}' deleted` })
 }
 // Create contact
 const create = async (req, res, next) => {
-  const newContact = await service.addContact(req.body)
+  const { _id } = req.user
+  const newContact = await addContact(req.body, _id)
 
   return res.status(201).json(newContact)
 }
 // Update contact
 const update = async (req, res, next) => {
   const { contactId } = req.params
-
-  await service.updateContact(contactId, req.body)
-  const newContact = await service.getContactById(contactId)
+  const { _id } = req.user
+  const newContact = await updateContact(contactId, req.body, _id)
 
   return res.status(200).json(newContact)
 }
 // Patch contact
 const patch = async (req, res, next) => {
   const { contactId } = req.params
-  await service.patchContact(contactId, req.body)
-  const newContact = await service.getContactById(contactId)
+  const { _id } = req.user
+
+  const newContact = await patchContact(contactId, req.body, _id)
 
   return res.status(200).json(newContact)
 }

@@ -18,7 +18,7 @@ const addContactValidation = (req, res, next) => {
   const validationResult = schema.validate(req.body)
 
   if (validationResult.error) {
-    next(new ValidationError(validationResult.error.details))
+    next(new ValidationError(JSON.stringify(validationResult.error.details)))
   }
   next()
 }
@@ -31,11 +31,7 @@ const updateContactValidation = (req, res, next) => {
   const validationResult = schema.validate(req.body)
 
   if (validationResult.error) {
-    next(
-      new ValidationError(
-        'Only favorite field possible to update with patch method'
-      )
-    )
+    next(new ValidationError(JSON.stringify(validationResult.error)))
   }
 
   next()
