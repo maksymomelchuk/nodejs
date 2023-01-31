@@ -1,46 +1,56 @@
 const Contact = require('../db/contactModel')
 const { NotFoundError } = require('../helpers/errors')
 
-const getContacts = async () => {
-  const data = await Contact.find()
+const getContacts = async (owner, { page, limit, favorite }) => {
+  const data = await Contact.find({ owner })
+    .skip((parseInt(page) - 1) * parseInt(limit))
+    .limit(parseInt(limit))
+    .find(favorite && { favorite })
   return data
 }
 
-const getContactById = async (id) => {
-  const data = await Contact.findById(id)
+const getContactById = async (_id, owner) => {
+  const data = await Contact.findById({ _id, owner })
   if (!data) {
-    throw new NotFoundError(`Contact with id ${id} not found`)
+    throw new NotFoundError(`Contact with id ${_id} not found`)
   }
   return data
 }
 
-const removeContact = async (id) => {
-  const data = await Contact.findByIdAndDelete(id)
+const removeContact = async (_id, owner) => {
+  const data = await Contact.findByIdAndDelete({ _id, owner })
   if (!data) {
-    throw new NotFoundError(`Contact with id ${id} not found`)
+    throw new NotFoundError(`Contact with id ${_id} not found`)
   }
   return data
 }
 
-const addContact = async (body) => {
-  const data = await Contact.create(body)
+const addContact = async (body, owner) => {
+  const data = new Contact({ ...body, owner })
+  await data.save()
   return data
 }
 
-const updateContact = async (id, body) => {
-  const data = await Contact.findById(id)
+const updateContact = async (_id, body, owner) => {
+  const data = await Contact.findById({ _id, owner })
   if (!data) {
-    throw new NotFoundError(`Contact with id ${id} not found`)
+    throw new NotFoundError(`Contact with id ${_id} not found`)
   }
-  await Contact.findByIdAndUpdate(id, body)
+  const newContact = await Contact.findByIdAndUpdate({ _id, owner }, body, {
+    new: true,
+  })
+  return newContact
 }
 
-const patchContact = async (id, body) => {
-  const data = await Contact.findById(id)
+const patchContact = async (_id, body, owner) => {
+  const data = await Contact.findById({ _id, owner })
   if (!data) {
-    throw new NotFoundError(`Contact with id ${id} not found`)
+    throw new NotFoundError(`Contact with id ${_id} not found`)
   }
-  await Contact.findByIdAndUpdate(id, body)
+  const newContact = await Contact.findByIdAndUpdate({ _id, owner }, body, {
+    new: true,
+  })
+  return newContact
 }
 
 module.exports = {

@@ -9,15 +9,19 @@ const {
   create,
   update,
   patch,
-} = require('../../controller/controllers')
+} = require('../../controller/contactsControllers')
 
 const {
   addContactValidation,
   updateContactValidation,
 } = require('../../middlewares/validation')
 
+const { authMiddleware } = require('../../middlewares/authMiddleware')
+
 const { asyncWrapper } = require('../../helpers/apiHelpers')
 
+//
+router.use(authMiddleware)
 // Get all contacts
 router.get('/', asyncWrapper(get))
 // Get contact by id
@@ -31,4 +35,4 @@ router.put('/:contactId', addContactValidation, asyncWrapper(update))
 // Patch contact
 router.patch('/:contactId', updateContactValidation, asyncWrapper(patch))
 
-module.exports = router
+module.exports = { contactsRouter: router }
