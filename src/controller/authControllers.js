@@ -5,6 +5,7 @@ const {
   logout,
   current,
   changeSubcription,
+  updateAvatar,
 } = require('../service/authService')
 
 const registerController = async (req, res) => {
@@ -47,10 +48,20 @@ const changeSubscriptionController = async (req, res) => {
   res.status(200).json({ status: 'success', user })
 }
 
+const uploadController = async (req, res) => {
+  const [, token] = parseToken(req)
+  const { _id } = await current(token)
+
+  const { avatarURL } = await updateAvatar(_id, req.file)
+
+  res.status(200).json({ avatarURL })
+}
+
 module.exports = {
   registerController,
   loginController,
   logoutController,
   currentUserController,
   changeSubscriptionController,
+  uploadController,
 }

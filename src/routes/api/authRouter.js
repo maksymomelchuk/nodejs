@@ -8,10 +8,14 @@ const {
   logoutController,
   currentUserController,
   changeSubscriptionController,
+  uploadController,
 } = require('../../controller/authControllers')
 
 const { asyncWrapper } = require('../../helpers/apiHelpers')
-const { authMiddleware } = require('../../middlewares/authMiddleware')
+const {
+  authMiddleware,
+  uploadMiddleware,
+} = require('../../middlewares/authMiddleware')
 
 // Register
 router.post('/register', asyncWrapper(registerController))
@@ -23,5 +27,11 @@ router.post('/logout', authMiddleware, asyncWrapper(logoutController))
 router.get('/current', authMiddleware, asyncWrapper(currentUserController))
 // Change subscription
 router.patch('/', authMiddleware, asyncWrapper(changeSubscriptionController))
-
+// Update avatar
+router.post(
+  '/avatars',
+  authMiddleware,
+  uploadMiddleware.single('avatar'),
+  asyncWrapper(uploadController)
+)
 module.exports = { authRouter: router }

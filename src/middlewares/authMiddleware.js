@@ -1,4 +1,7 @@
 const jwt = require('jsonwebtoken')
+const multer = require('multer')
+const { v4: uuidv4 } = require('uuid')
+const path = require('path')
 const { NotAuthorizedError } = require('../helpers/errors')
 const User = require('../db/userModel')
 
@@ -24,7 +27,18 @@ const authMiddleware = async (req, res, next) => {
     next(new NotAuthorizedError('Invalid token'))
   }
 }
+// Update avatar
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.resolve('./tmp'))
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname)
+  },
+})
+const uploadMiddleware = multer({ storage })
 
 module.exports = {
   authMiddleware,
+  uploadMiddleware,
 }

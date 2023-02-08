@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const fs = require('fs/promises')
 const { NodeCustomError } = require('./errors.js')
 
 const asyncWrapper = (controller) => {
@@ -29,9 +30,19 @@ const parseToken = (req) => {
   return req.headers.authorization.split(' ')
 }
 
+const isFolderExist = async (path) => {
+  try {
+    await fs.access(path)
+    return true
+  } catch (error) {
+    return false
+  }
+}
+
 module.exports = {
   asyncWrapper,
   errorHandler,
   createToken,
   parseToken,
+  isFolderExist,
 }
