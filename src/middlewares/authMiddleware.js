@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken')
 const multer = require('multer')
-const { v4: uuidv4 } = require('uuid')
 const path = require('path')
 const { NotAuthorizedError } = require('../helpers/errors')
 const User = require('../db/userModel')
