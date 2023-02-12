@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const multer = require('multer')
 const path = require('path')
-const { NotAuthorizedError } = require('../helpers/errors')
+const { NotAuthorizedError, ValidationError } = require('../helpers/errors')
 const User = require('../db/userModel')
 
 const authMiddleware = async (req, res, next) => {
@@ -37,7 +37,16 @@ const storage = multer.diskStorage({
 })
 const uploadMiddleware = multer({ storage })
 
+const resendVerificationMiddleware = async (req, res, next) => {
+  const { email } = req.body
+  if (!email) {
+    next(new ValidationError('missing required field email'))
+  }
+  next()
+}
+
 module.exports = {
   authMiddleware,
   uploadMiddleware,
+  resendVerificationMiddleware,
 }

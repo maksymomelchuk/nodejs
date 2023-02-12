@@ -6,6 +6,8 @@ const {
   current,
   changeSubcription,
   updateAvatar,
+  verificationConfirmation,
+  resendVerificationMail,
 } = require('../service/authService')
 
 const registerController = async (req, res) => {
@@ -57,6 +59,20 @@ const uploadController = async (req, res) => {
   res.status(200).json({ avatarURL })
 }
 
+const emailVerificationController = async (req, res) => {
+  const { verificationToken } = req.params
+  await verificationConfirmation(verificationToken)
+
+  res.status(200).json({ status: 'Verification successful' })
+}
+
+const resendVerification = async (req, res) => {
+  const { email } = req.body
+  await resendVerificationMail(email)
+
+  res.status(200).json({ status: 'Verification email sent' })
+}
+
 module.exports = {
   registerController,
   loginController,
@@ -64,4 +80,6 @@ module.exports = {
   currentUserController,
   changeSubscriptionController,
   uploadController,
+  emailVerificationController,
+  resendVerification,
 }

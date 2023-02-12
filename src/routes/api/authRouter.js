@@ -9,12 +9,15 @@ const {
   currentUserController,
   changeSubscriptionController,
   uploadController,
+  emailVerificationController,
+  resendVerification,
 } = require('../../controller/authControllers')
 
 const { asyncWrapper } = require('../../helpers/apiHelpers')
 const {
   authMiddleware,
   uploadMiddleware,
+  resendVerificationMiddleware,
 } = require('../../middlewares/authMiddleware')
 
 // Register
@@ -34,4 +37,16 @@ router.post(
   uploadMiddleware.single('avatar'),
   asyncWrapper(uploadController)
 )
+// Email verification
+router.get(
+  '/verify/:verificationToken',
+  asyncWrapper(emailVerificationController)
+)
+// Resend verification email
+router.post(
+  '/verify',
+  resendVerificationMiddleware,
+  asyncWrapper(resendVerification)
+)
+
 module.exports = { authRouter: router }
